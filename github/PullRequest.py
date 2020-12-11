@@ -838,18 +838,20 @@ class PullRequest(github.GithubObject.CompletableGithubObject):
         return status == 204
 
     def restore_branch(self):
-        self.head.repo.create_git_ref("refs/heads/"+self.head.ref, sha=self.head.sha)
+        self.head.repo.create_git_ref("refs/heads/" + self.head.ref, sha=self.head.sha)
         return True
 
     def delete_branch(self, force):
-        if force: # Forcibly delete the branch and close any associated PRs
-            self.head.repo.get_git_ref( "heads/%s"%(self.head.ref) ).delete()
+        if force:  # Forcibly delete the branch and close any associated PRs
+            self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
             return True
         remaining_pulls = self.head.repo.get_pulls(head=self.head.ref)
         if remaining_pulls.totalCount > 0:
-            raise AttributeError("PRs referencing this branch remain. Not deleting the branch")
+            raise AttributeError(
+                "PRs referencing this branch remain. Not deleting the branch"
+            )
         else:
-            self.head.repo.get_git_ref( "heads/%s"%(self.head.ref) ).delete()
+            self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
             return True
 
     def merge(
@@ -858,7 +860,7 @@ class PullRequest(github.GithubObject.CompletableGithubObject):
         commit_title=github.GithubObject.NotSet,
         merge_method=github.GithubObject.NotSet,
         sha=github.GithubObject.NotSet,
-        deletebranch=False
+        deletebranch=False,
     ):
         """
         :calls: `PUT /repos/:owner/:repo/pulls/:number/merge <http://developer.github.com/v3/pulls>`_

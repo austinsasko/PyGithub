@@ -36,6 +36,7 @@ import datetime
 from . import Framework
 from github import GithubException
 
+
 class PullRequest(Framework.TestCase):
     def setUp(self):
         super().setUp()
@@ -51,8 +52,8 @@ class PullRequest(Framework.TestCase):
         flo_repo = self.g.get_repo("FlorentClarret/PyGithub")
         self.pullMaintainerCanModify = flo_repo.get_pull(2)
 
-        self.austin_repo = self.g.get_repo("austinsasko/PyGithub")
-        self.austin_pull = self.austin_repo.get_pull(21)
+        self.delete_restore_repo = self.g.get_repo("austinsasko/PyGithub")
+        self.delete_restore_pull = self.delete_restore_repo.get_pull(21)
 
     def testAttributesIssue256(self):
         self.assertEqual(
@@ -409,24 +410,48 @@ class PullRequest(Framework.TestCase):
         self.assertTrue(self.pull.update_branch())
 
     def testDeleteOnMerge(self):
-        self.assertTrue(self.austin_repo.get_branch(self.austin_pull.head.ref))
-        self.assertFalse(self.austin_pull.is_merged())
-        status = self.austin_pull.merge(deletebranch=True)
+        self.assertTrue(
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        )
+        self.assertFalse(self.delete_restore_pull.is_merged())
+        status = self.delete_restore_pull.merge(deletebranch=True)
         self.assertTrue(status.merged)
-        self.assertTrue(self.austin_pull.is_merged())
-        self.assertRaises(GithubException, self.austin_repo.get_branch, self.austin_pull.head.ref)
+        self.assertTrue(self.delete_restore_pull.is_merged())
+        self.assertRaises(
+            GithubException,
+            self.delete_restore_repo.get_branch,
+            self.delete_restore_pull.head.ref,
+        )
 
     def testRestoreBranch(self):
-        self.assertRaises(GithubException, self.austin_repo.get_branch, self.austin_pull.head.ref)
-        self.assertTrue(self.austin_pull.restore_branch())
-        self.assertTrue(self.austin_repo.get_branch(self.austin_pull.head.ref))
+        self.assertRaises(
+            GithubException,
+            self.delete_restore_repo.get_branch,
+            self.delete_restore_pull.head.ref,
+        )
+        self.assertTrue(self.delete_restore_pull.restore_branch())
+        self.assertTrue(
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        )
 
     def testDeleteBranch(self):
-        self.assertTrue(self.austin_repo.get_branch(self.austin_pull.head.ref))
-        self.assertTrue(self.austin_pull.delete_branch(force=False))
-        self.assertRaises(GithubException, self.austin_repo.get_branch, self.austin_pull.head.ref)
+        self.assertTrue(
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        )
+        self.assertTrue(self.delete_restore_pull.delete_branch(force=False))
+        self.assertRaises(
+            GithubException,
+            self.delete_restore_repo.get_branch,
+            self.delete_restore_pull.head.ref,
+        )
 
     def testForceDeleteBranch(self):
-        self.assertTrue(self.austin_repo.get_branch(self.austin_pull.head.ref))
-        self.assertTrue(self.austin_pull.delete_branch(force=True))
-        self.assertRaises(GithubException, self.austin_repo.get_branch, self.austin_pull.head.ref)
+        self.assertTrue(
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        )
+        self.assertTrue(self.delete_restore_pull.delete_branch(force=True))
+        self.assertRaises(
+            GithubException,
+            self.delete_restore_repo.get_branch,
+            self.delete_restore_pull.head.ref,
+        )

@@ -33,8 +33,9 @@
 
 import datetime
 
-from . import Framework
 from github import GithubException
+
+from . import Framework
 
 
 class PullRequest(Framework.TestCase):

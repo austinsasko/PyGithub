@@ -424,8 +424,8 @@ class PullRequest(Framework.TestCase):
         self.assertEqual(
             raisedexp.exception.data,
             {
-                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
-                u"message": u"Branch not found",
+                "documentation_url": "https://docs.github.com/rest/reference/repos#get-a-branch",
+                "message": "Branch not found",
             },
         )
 
@@ -436,8 +436,8 @@ class PullRequest(Framework.TestCase):
         self.assertEqual(
             raisedexp.exception.data,
             {
-                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
-                u"message": u"Branch not found",
+                "documentation_url": "https://docs.github.com/rest/reference/repos#get-a-branch",
+                "message": "Branch not found",
             },
         )
         self.assertTrue(self.delete_restore_pull.restore_branch())
@@ -456,8 +456,8 @@ class PullRequest(Framework.TestCase):
         self.assertEqual(
             raisedexp.exception.data,
             {
-                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
-                u"message": u"Branch not found",
+                "documentation_url": "https://docs.github.com/rest/reference/repos#get-a-branch",
+                "message": "Branch not found",
             },
         )
 
@@ -472,7 +472,7 @@ class PullRequest(Framework.TestCase):
         self.assertEqual(
             raisedexp.exception.data,
             {
-                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
-                u"message": u"Branch not found",
+                "documentation_url": "https://docs.github.com/rest/reference/repos#get-a-branch",
+                "message": "Branch not found",
             },
         )

@@ -418,17 +418,27 @@ class PullRequest(Framework.TestCase):
         status = self.delete_restore_pull.merge(deletebranch=True)
         self.assertTrue(status.merged)
         self.assertTrue(self.delete_restore_pull.is_merged())
-        self.assertRaises(
-            GithubException,
-            self.delete_restore_repo.get_branch,
-            self.delete_restore_pull.head.ref,
+        with self.assertRaises(GithubException) as raisedexp:
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        self.assertEqual(raisedexp.exception.status, 404)
+        self.assertEqual(
+            raisedexp.exception.data,
+            {
+                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
+                u"message": u"Branch not found",
+            },
         )
 
     def testRestoreBranch(self):
-        self.assertRaises(
-            GithubException,
-            self.delete_restore_repo.get_branch,
-            self.delete_restore_pull.head.ref,
+        with self.assertRaises(GithubException) as raisedexp:
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        self.assertEqual(raisedexp.exception.status, 404)
+        self.assertEqual(
+            raisedexp.exception.data,
+            {
+                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
+                u"message": u"Branch not found",
+            },
         )
         self.assertTrue(self.delete_restore_pull.restore_branch())
         self.assertTrue(
@@ -439,20 +449,30 @@ class PullRequest(Framework.TestCase):
         self.assertTrue(
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         )
-        self.assertTrue(self.delete_restore_pull.delete_branch(force=False))
-        self.assertRaises(
-            GithubException,
-            self.delete_restore_repo.get_branch,
-            self.delete_restore_pull.head.ref,
+        self.assertEqual(self.delete_restore_pull.delete_branch(force=False), None)
+        with self.assertRaises(GithubException) as raisedexp:
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        self.assertEqual(raisedexp.exception.status, 404)
+        self.assertEqual(
+            raisedexp.exception.data,
+            {
+                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
+                u"message": u"Branch not found",
+            },
         )
 
     def testForceDeleteBranch(self):
         self.assertTrue(
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         )
-        self.assertTrue(self.delete_restore_pull.delete_branch(force=True))
-        self.assertRaises(
-            GithubException,
-            self.delete_restore_repo.get_branch,
-            self.delete_restore_pull.head.ref,
+        self.assertEqual(self.delete_restore_pull.delete_branch(force=True), None)
+        with self.assertRaises(GithubException) as raisedexp:
+            self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
+        self.assertEqual(raisedexp.exception.status, 404)
+        self.assertEqual(
+            raisedexp.exception.data,
+            {
+                u"documentation_url": u"https://docs.github.com/rest/reference/repos#get-a-branch",
+                u"message": u"Branch not found",
+            },
         )

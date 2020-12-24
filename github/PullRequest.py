@@ -838,21 +838,28 @@ class PullRequest(github.GithubObject.CompletableGithubObject):
         return status == 204
 
     def restore_branch(self):
-        self.head.repo.create_git_ref("refs/heads/" + self.head.ref, sha=self.head.sha)
-        return True
+        """
+        :calls: `POST /repos/:owner/:repo/git/refs <http://developer.github.com/v3/git/refs>`_
+        :rtype: :class:`github.GitRef.GitRef`
+        """
+        return self.head.repo.create_git_ref(
+            "refs/heads/" + self.head.ref, sha=self.head.sha
+        )
 
-    def delete_branch(self, force):
+    def delete_branch(self, force=False):
+        """
+        :calls: `POST /repos/:owner/:repo/git/refs <http://developer.github.com/v3/git/refs>`_
+        :rtype: :class:`github.GitRef.GitRef`
+        """
         if force:  # Forcibly delete the branch and close any associated PRs
-            self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
-            return True
+            return self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
         remaining_pulls = self.head.repo.get_pulls(head=self.head.ref)
         if remaining_pulls.totalCount > 0:
             raise AttributeError(
                 "PRs referencing this branch remain. Not deleting the branch"
             )
         else:
-            self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
-            return True
+            return self.head.repo.get_git_ref("heads/%s" % (self.head.ref)).delete()
 
     def merge(
         self,

@@ -858,7 +858,6 @@ class PullRequest(github.GithubObject.CompletableGithubObject):
             else:
                 return self.head.repo.get_git_ref(f"heads/{self.head.ref}").delete()
         return self.head.repo.get_git_ref(f"heads/{self.head.ref}").delete()
-        
 
     def merge(
         self,

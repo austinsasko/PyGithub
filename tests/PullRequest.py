@@ -30,9 +30,7 @@
 ################################################################################
 
 import datetime
-
-from github import GithubException
-
+import github
 from . import Framework
 
 
@@ -416,7 +414,7 @@ class PullRequest(Framework.TestCase):
         status = self.delete_restore_pull.merge(deletebranch=True)
         self.assertTrue(status.merged)
         self.assertTrue(self.delete_restore_pull.is_merged())
-        with self.assertRaises(GithubException) as raisedexp:
+        with self.assertRaises(github.GithubException) as raisedexp:
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         self.assertEqual(raisedexp.exception.status, 404)
         self.assertEqual(
@@ -428,7 +426,7 @@ class PullRequest(Framework.TestCase):
         )
 
     def testRestoreBranch(self):
-        with self.assertRaises(GithubException) as raisedexp:
+        with self.assertRaises(github.GithubException) as raisedexp:
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         self.assertEqual(raisedexp.exception.status, 404)
         self.assertEqual(
@@ -447,8 +445,8 @@ class PullRequest(Framework.TestCase):
         self.assertTrue(
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         )
-        self.assertEqual(self.delete_restore_pull.delete_branch(force=False), None)
-        with self.assertRaises(GithubException) as raisedexp:
+        self.assertIs(self.delete_restore_pull.delete_branch(force=False), None)
+        with self.assertRaises(github.GithubException) as raisedexp:
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         self.assertEqual(raisedexp.exception.status, 404)
         self.assertEqual(
@@ -464,7 +462,7 @@ class PullRequest(Framework.TestCase):
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         )
         self.assertEqual(self.delete_restore_pull.delete_branch(force=True), None)
-        with self.assertRaises(GithubException) as raisedexp:
+        with self.assertRaises(github.GithubException) as raisedexp:
             self.delete_restore_repo.get_branch(self.delete_restore_pull.head.ref)
         self.assertEqual(raisedexp.exception.status, 404)
         self.assertEqual(
